@@ -1,5 +1,5 @@
 from autodocs import File
-from autodocs import PyDefinition
+from autodocs import PyDefinition, PyDefinitionTypeEnum
 
 
 def test_init(file):
@@ -45,25 +45,119 @@ def test_scan_for_documentation(file):
     assert func4.docstring_end_line is None
 
 
-def test_replace_documentation(file):
+def test_set_documentation(file):
     new_docstring = "This is a new docstring"
-    file.replace_documentation("test_func", new_docstring)
+    file.set_documentation("test_func", new_docstring)
     assert file.documentation["test_func"].docstring == new_docstring
 
 
-def test_write(file, tmp_path):
+def test_replace_function_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text('def test_func():\n    """This is a test function"""\n    pass\n')
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'def test_func():\n    """New docstring"""\n    pass\n'
+    assert new_content == expected_content
+
+
+def test_replace_function_with_args_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        'def test_func(arg1, arg2):\n    """This is a test function"""\n    pass\n'
+    )
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'def test_func(arg1, arg2):\n    """New docstring"""\n    pass\n'
+    assert new_content == expected_content
+
+
+def test_replace_class_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text('class TestClass:\n    """This is a test class"""\n    pass\n')
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'class TestClass:\n    """New docstring"""\n    pass\n'
+    assert new_content == expected_content
+
+
+def test_replace_class_with_args_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        'class TestClass(arg1, arg2):\n    """This is a test class"""\n    pass\n'
+    )
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = (
+        'class TestClass(arg1, arg2):\n    """New docstring"""\n    pass\n'
+    )
+    assert new_content == expected_content
+
+
+def test_add_function_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text("def test_func():\n    pass\n")
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'def test_func():\n    """New docstring"""\n    pass\n'
+    assert new_content == expected_content
+
+
+def test_add_class_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text("class TestClass:\n    pass\n")
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'class TestClass:\n    """New docstring"""\n    pass\n'
+    assert new_content == expected_content
+
+
+def test_save(file, tmp_path):
     d = tmp_path / "sub"
     d.mkdir()
     p = d / "test.py"
-    p.write_text('def test_func():\n    """This is a test function"""\n    pass\n')
+    p.write_text(
+        'def test_func():\n    """This is a test function"""\n    print("hello world")\n    pass\n'  # noqa
+    )
 
     file = File(str(p))
-    file.replace_documentation("test_func", "New docstring")
-    file.write()
+    print(file.content)
+    file.set_documentation("test_func", "New docstring\n    Its good")
+    file.save()
 
     with p.open() as f:
         content = f.read()
-    expected_content = 'def test_func():\n    """New docstring"""\n    pass\n'
+    print(content)
+    expected_content = 'def test_func():\n    """New docstring\n    Its good"""\n    print("hello world")\n    pass\n'  # noqa: E501
     assert content == expected_content
 
 

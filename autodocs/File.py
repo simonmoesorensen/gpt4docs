@@ -13,9 +13,15 @@ class File:
 
     def __init__(self, file_path: str) -> None:
         """Initializes the Scanner with the file path"""
+        self.content = self._read_file(file_path)
         self.file_path = file_path
+
         self.original_documentation = self._scan_for_documentation()
         self.documentation = self.original_documentation
+
+    def _read_file(self, file_path):
+        with open(file_path, "r") as f:
+            return f.read()
 
     def _scan_for_documentation(self) -> None:
         """Scans the file for functions and classes and their documentation"""
@@ -65,32 +71,37 @@ class File:
 
         return defs
 
-    def _insert_docstring(self, line: str, docstring: str) -> str:
-        """Inserts the docstring into the line"""
-        return line.replace(":", f':\n"""{docstring}"""', 1)
+    def _write_docstring(self, lines: str, definition: PyDefinition) -> str:
+        """Find the definition in the file and write the docstring from the
+        pydefinition object"""
 
-    def _replace_docstring(self, line: str, docstring: str) -> str:
-        """Replaces the docstring in the line"""
-        return line.replace('"""', f'"""{docstring}', 1)
+        # Pattern to match when docstring exists
+        pattern_existing_doc = (
+            rf"(?P<definition>{definition.type} {definition.name}.*?:)\n"
+            rf"\s*\"\"\"(?P<existing_doc>.*?)\"\"\"\n"
+        )
+        # Pattern to match when no docstring exists
+        pattern_no_doc = rf"(?P<definition>{definition.type} {definition.name}.*?:)\n"
 
-    def replace_documentation(self, name: str, docstring: str) -> None:
-        """Replaces the documentation for a given function or class in the file"""
+        if re.search(pattern_existing_doc, lines, flags=re.DOTALL):
+            replacement = rf'\g<definition>\n    """{definition.docstring}"""\n'
+            new_code = re.sub(pattern_existing_doc, replacement, lines, flags=re.DOTALL)
+        else:
+            replacement = rf'\g<definition>\n    """{definition.docstring}"""\n'
+            new_code = re.sub(pattern_no_doc, replacement, lines)
+
+        return new_code
+
+    def set_documentation(self, name: str, docstring: str) -> None:
+        """Set the documentation for a given function or class in the file"""
         self.documentation[name].docstring = docstring
 
-    def write(self, overwrite: bool = False) -> None:
+    def save(self, overwrite: bool = False) -> None:
         """Writes the new documentation to the file"""
-        with open(self.file_path, "r") as f:
-            lines = f.readlines()
+        lines = self.content
 
-        for name, definition in self.documentation.items():
-            if overwrite:
-                lines[definition.line - 1] = self._replace_docstring(
-                    lines[definition.line - 1], definition.docstring
-                )
-            else:
-                lines[definition.line - 1] = self._insert_docstring(
-                    lines[definition.line - 1], definition.docstring
-                )
+        for definition in self.documentation.values():
+            lines = self._write_docstring(lines, definition)
 
         with open(self.file_path, "w") as f:
             f.writelines(lines)
