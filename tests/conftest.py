@@ -21,8 +21,12 @@ def project(project_root):
     return Project(project_root)
 
 
-# Clean up all files after test
-def pytest_sessionfinish(session, exitstatus):
+# Clean up all files after each test
+@pytest.fixture(autouse=True)
+def teardown():
+    # Run test
+    yield
+
     # Remove all .new.py files
     new_files = TEST_DATA.rglob("*.new.py")
 
