@@ -1,10 +1,11 @@
 from autodocs import File
 from autodocs import PyDefinition, PyDefinitionTypeEnum
+from pathlib import Path
 
 
 def test_init(file):
     assert isinstance(file, File)
-    assert file.file_path == "tests/data/test.py"
+    assert file.file_path == Path("tests/data/test.py")
     assert isinstance(file.original_documentation, dict)
     assert isinstance(file.documentation, dict)
 
@@ -154,9 +155,12 @@ def test_save(file, tmp_path):
     file.set_documentation("test_func", "New docstring\n    Its good")
     file.save()
 
+    # Verify new name
+    p = d / "test.new.py"
+
     with p.open() as f:
         content = f.read()
-    print(content)
+
     expected_content = 'def test_func():\n    """New docstring\n    Its good"""\n    print("hello world")\n    pass\n'  # noqa: E501
     assert content == expected_content
 
