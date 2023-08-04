@@ -1,6 +1,6 @@
 import re
 from typing import Dict
-
+from pathlib import Path
 from autodocs import PyDefinition
 
 
@@ -11,8 +11,11 @@ class File:
     original_documentation: Dict[str, PyDefinition] = {}
     documentation: Dict[str, PyDefinition] = {}
 
-    def __init__(self, file_path: str) -> None:
+    def __init__(self, file_path: str | Path) -> None:
         """Initializes the Scanner with the file path"""
+        if isinstance(file_path, str):
+            file_path = Path(file_path)
+
         self.content = self._read_file(file_path)
         self.file_path = file_path
 
@@ -103,7 +106,15 @@ class File:
         for definition in self.documentation.values():
             lines = self._write_docstring(lines, definition)
 
-        with open(self.file_path, "w") as f:
+        if overwrite:
+            file_path = self.file_path
+        else:
+            # Add .new to the file name
+            file_path = self.file_path.parent / (
+                self.file_path.name.removesuffix(".py") + ".new.py"
+            )
+
+        with open(file_path, "w") as f:
             f.writelines(lines)
 
     def get_docs(self) -> Dict[str, PyDefinition]:
