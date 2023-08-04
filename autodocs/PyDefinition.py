@@ -11,6 +11,4 @@ class PyDefinitionTypeEnum(str, Enum):
 class PyDefinition(BaseModel):
     type: PyDefinitionTypeEnum
     name: str
-    docstring_start_line: Optional[int] = None
-    docstring_end_line: Optional[int] = None
     docstring: Optional[str] = None
