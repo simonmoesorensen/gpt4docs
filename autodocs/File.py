@@ -28,63 +28,35 @@ class File:
 
     def _scan_for_documentation(self) -> None:
         """Scans the file for functions and classes and their documentation"""
-        with open(self.file_path, "r") as f:
-            lines = f.readlines()
-
         # Regex for finding functions or classes, and docstrings
-        def_line_re = re.compile(r"^\s*(def|class)\s+(\w+)\b")
-        docstring_start_re = re.compile(r'^\s*"""')
-        docstring_end_re = re.compile(r'.*"""[\n?]$')
+        re_definitions = r"""(?P<definition>\S[def|class]* (?P<name>\w*) *\(?.*?\)?:)\n\s*(\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
 
-        # Loop through the lines and find the functions and classes
         defs = {}
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            match = def_line_re.match(line)
-            if match:
-                docstring = None
-                docstring_start_line = None
-                docstring_end_line = None
 
-                if i + 1 < len(lines):
-                    next_line = lines[i + 1]
-                    if docstring_start_re.match(next_line):
-                        docstring_lines = []
-                        i += 1
-
-                        docstring_start_line = i + 1
-                        while i < len(lines) and not docstring_end_re.match(lines[i]):
-                            docstring_lines.append(lines[i])
-                            i += 1
-                        if i < len(lines) and docstring_end_re.match(lines[i]):
-                            docstring_lines.append(lines[i])
-                        docstring = "".join(docstring_lines).strip()
-                        docstring_end_line = i + 1
-
-                name = match.group(2)
-                defs[name] = PyDefinition(
-                    type=match.group(1),
-                    name=name,
-                    docstring_start_line=docstring_start_line,
-                    docstring_end_line=docstring_end_line,
-                    docstring=docstring,
-                )
-            i += 1
-
+        # Create definitions from all matches
+        for match in re.finditer(re_definitions, self.content):
+            defs[match.group("name")] = PyDefinition(
+                type=match.group("definition").split(" ")[0],
+                name=match.group("name"),
+                docstring=match.group("docstring"),
+            )
         return defs
 
     def _write_docstring(self, lines: str, definition: PyDefinition) -> str:
         """Find the definition in the file and write the docstring from the
         pydefinition object"""
+        if definition.docstring is None:
+            return lines
 
         # Pattern to match when docstring exists
         pattern_existing_doc = (
-            rf"(?P<definition>{definition.type} {definition.name}.*?:)\n"
-            rf"\s*\"\"\"(?P<existing_doc>.*?)\"\"\"\n"
+            rf"(?P<definition>{definition.type} {definition.name}\(?.*?\)?:)\n"
+            rf"\s*\"\"\"(?P<existing_doc>[\s\S]*?)\"\"\"\n"
         )
         # Pattern to match when no docstring exists
-        pattern_no_doc = rf"(?P<definition>{definition.type} {definition.name}.*?:)\n"
+        pattern_no_doc = (
+            rf"(?P<definition>{definition.type} {definition.name}\(?.*?\(?:)\n"
+        )
 
         if re.search(pattern_existing_doc, lines, flags=re.DOTALL):
             replacement = rf'\g<definition>\n    """{definition.docstring}"""\n'
