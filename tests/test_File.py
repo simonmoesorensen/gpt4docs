@@ -19,31 +19,21 @@ def test_scan_for_documentation(file):
     func1 = file.documentation["test_func"]
     assert isinstance(func1, PyDefinition)
     assert func1.type == "def"
-    assert func1.docstring.strip() == '"""This is a test function"""'
-    assert func1.docstring_start_line == 2
-    assert func1.docstring_end_line == 2
+    assert func1.docstring == "This is a test function"
 
     func2 = file.documentation["test_func2"]
-    expected_docstring = '"""This is a test function\n\n    with multiple lines"""'
-    assert func2.docstring.strip() == expected_docstring
+    expected_docstring = "This is a test function\n\n    with multiple lines"
+    assert func2.docstring == expected_docstring
     assert func2.type == "def"
-    assert func2.docstring_start_line == 7
-    assert func2.docstring_end_line == 9
 
     func3 = file.documentation["TestClass"]
-    expected_docstring = (
-        '"""This is a test class\n    with\n    other\n    syntax\n\n    """'
-    )
-    assert func3.docstring.strip() == expected_docstring
+    expected_docstring = "This is a test class\n    with\n    other\n    syntax\n\n    "
+    assert func3.docstring == expected_docstring
     assert func3.type == "class"
-    assert func3.docstring_start_line == 15
-    assert func3.docstring_end_line == 20
 
     func4 = file.documentation["no_docstring"]
     assert func4.docstring is None
     assert func4.type == "def"
-    assert func4.docstring_start_line is None
-    assert func4.docstring_end_line is None
 
 
 def test_set_documentation(file):
