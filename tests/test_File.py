@@ -52,7 +52,9 @@ def test_replace_function_docstring(tmp_path):
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
-    expected_content = 'def test_func():\n    """New docstring"""\n    pass\n'
+    expected_content = (
+        'def test_func():\n    """\n    New docstring\n    """\n    pass\n'
+    )
     assert new_content == expected_content
 
 
@@ -68,7 +70,9 @@ def test_replace_function_with_args_docstring(tmp_path):
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
-    expected_content = 'def test_func(arg1, arg2):\n    """New docstring"""\n    pass\n'
+    expected_content = (
+        'def test_func(arg1, arg2):\n    """\n    New docstring\n    """\n    pass\n'
+    )
     assert new_content == expected_content
 
 
@@ -82,7 +86,9 @@ def test_replace_class_docstring(tmp_path):
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
-    expected_content = 'class TestClass:\n    """New docstring"""\n    pass\n'
+    expected_content = (
+        'class TestClass:\n    """\n    New docstring\n    """\n    pass\n'
+    )
     assert new_content == expected_content
 
 
@@ -99,7 +105,7 @@ def test_replace_class_with_args_docstring(tmp_path):
     new_content = file._write_docstring(p.read_text(), new_doc)
 
     expected_content = (
-        'class TestClass(arg1, arg2):\n    """New docstring"""\n    pass\n'
+        'class TestClass(arg1, arg2):\n    """\n    New docstring\n    """\n    pass\n'
     )
     assert new_content == expected_content
 
@@ -114,7 +120,9 @@ def test_add_function_docstring(tmp_path):
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
-    expected_content = 'def test_func():\n    """New docstring"""\n    pass\n'
+    expected_content = (
+        'def test_func():\n    """\n    New docstring\n    """\n    pass\n'
+    )
     assert new_content == expected_content
 
 
@@ -128,7 +136,9 @@ def test_add_class_docstring(tmp_path):
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
-    expected_content = 'class TestClass:\n    """New docstring"""\n    pass\n'
+    expected_content = (
+        'class TestClass:\n    """\n    New docstring\n    """\n    pass\n'
+    )
     assert new_content == expected_content
 
 
@@ -155,7 +165,7 @@ def test_save(file, tmp_path):
     with p.open() as f:
         content = f.read()
 
-    expected_content = 'def test_func():\n    """New docstring\n    Its good"""\n    print("hello world")\n    pass\n'  # noqa: E501
+    expected_content = 'def test_func():\n    """\n    New docstring\n        Its good\n    """\n    print("hello world")\n    pass\n'  # noqa: E501
     assert content == expected_content
     assert (tmp_path / "sub" / "test.py").exists() and (
         tmp_path / "sub_new" / "test.py"
@@ -177,3 +187,45 @@ def test_get_original_docs(file):
 
 def test_str(file):
     assert isinstance(str(file), str)
+
+
+def test_indentation_level_preserved_double_indent(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        '    def test_func(arg1, arg2):\n        """This is a test function"""\n        pass\n'  # noqa
+    )
+    file = File(str(p))
+
+    new_docstring = "New line 1\nNew line 2"
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring=new_docstring
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    # Notice how the new docstring lines are indented with 4 spaces
+    expected_content = (
+        '    def test_func(arg1, arg2):\n        """\n        New line 1\n'
+        '        New line 2\n        """\n        pass\n'
+    )
+    assert new_content == expected_content
+
+
+def test_indentation_level_preserved(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        'def test_func(arg1, arg2):\n    """This is a test function"""\n    pass\n'
+    )
+    file = File(str(p))
+
+    new_docstring = "New line 1\nNew line 2"
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring=new_docstring
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    # Notice how the new docstring lines are indented with 4 spaces
+    expected_content = (
+        'def test_func(arg1, arg2):\n    """\n    New line 1\n'
+        '    New line 2\n    """\n    pass\n'
+    )
+    assert new_content == expected_content

@@ -34,7 +34,8 @@ def test_project_save(tmp_path, project):
 
     with file.file_path.open() as f:
         expected_content = f.read().replace(
-            """\"\"\"This is a test function\"\"\"""", """\"\"\"New docstring\"\"\""""
+            """\"\"\"This is a test function\"\"\"""",
+            """\"\"\"\n    New docstring\n    \"\"\"""",
         )
 
     assert content == expected_content
