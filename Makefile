@@ -26,6 +26,12 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
+init: ## Initialize environment variables
+	@echo "Initializing environment variables...";
+	@read -p "Please enter the Open AI API key: " key; \
+	echo "OPENAI_API_KEY=$$key" > .env; \
+
+
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
