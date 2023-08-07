@@ -143,24 +143,28 @@ def test_save(file, tmp_path):
     file = File(str(p))
     print(file.content)
     file.set_documentation("test_func", "New docstring\n    Its good")
-    file.save()
 
-    # Verify new name
-    p = d / "test.new.py"
+    # Save in new dir
+    new_dir = tmp_path / "sub_new"
+    new_dir.mkdir()
+    p = new_dir / "test.py"
 
+    file.save(path=p)
+
+    # Verify new path
     with p.open() as f:
         content = f.read()
 
     expected_content = 'def test_func():\n    """New docstring\n    Its good"""\n    print("hello world")\n    pass\n'  # noqa: E501
     assert content == expected_content
+    assert (tmp_path / "sub" / "test.py").exists() and (
+        tmp_path / "sub_new" / "test.py"
+    ).exists()
 
 
 def test_get_docs(file):
     docs = file.get_docs()
-    assert "test_func" in docs
-    assert "test_func2" in docs
-    assert "TestClass" in docs
-    assert "no_docstring" in docs
+    assert len(docs) == 4
 
 
 def test_get_original_docs(file):

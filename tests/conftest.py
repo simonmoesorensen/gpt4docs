@@ -27,8 +27,7 @@ def teardown():
     # Run test
     yield
 
-    # Remove all .new.py files
-    new_files = TEST_DATA.rglob("*.new.py")
-
-    for file in new_files:
-        os.remove(file)
+    # Remove all directories with "_new" suffix recursively
+    new_dirs = TEST_DATA.rglob("*_new")
+    for dir_ in new_dirs:
+        os.system(f"rm -rf {dir_}")
