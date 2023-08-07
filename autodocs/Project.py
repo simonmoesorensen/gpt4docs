@@ -13,10 +13,22 @@ class Project:
         self.project_root = project_root
         self.files = list(map(File, self.project_root.glob("**/*.py")))
 
-    def save(self):
+    def save(self, suffix: str = "_new", overwrite: bool = False):
+        """Save the project to a new folder."""
+        if overwrite:
+            dir_ = self.project_root
+            new_root = self.project_root
+        else:
+            new_root = self.project_root.parent / (self.project_root.name + suffix)
+
         for file in self.files:
-            file.save()
-        logger.info(f"Saved {len(self.files)} files")
+            if not overwrite:
+                # Replace name of the project root with the new root name
+                dir_ = new_root / file.file_path.relative_to(self.project_root)
+                dir_.parent.mkdir(parents=True, exist_ok=True)
+                file.save(dir_, overwrite)
+
+        logger.info(f"Saved {len(self.files)} files to {new_root}")
 
     def _tree(self, dir_path: Path, padding: str = "", print_files: bool = True):
         """Represent the directory tree as a string."""

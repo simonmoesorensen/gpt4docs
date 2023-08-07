@@ -71,7 +71,7 @@ class File:
         """Set the documentation for a given function or class in the file"""
         self.documentation[name].docstring = docstring
 
-    def save(self, overwrite: bool = False) -> None:
+    def save(self, path: Path = None, overwrite: bool = False) -> None:
         """Writes the new documentation to the file"""
         lines = self.content
 
@@ -79,14 +79,11 @@ class File:
             lines = self._write_docstring(lines, definition)
 
         if overwrite:
-            file_path = self.file_path
-        else:
-            # Add .new to the file name
-            file_path = self.file_path.parent / (
-                self.file_path.name.removesuffix(".py") + ".new.py"
-            )
+            path = self.file_path
+        elif path is None:
+            raise ValueError("Path must be specified if overwrite is False")
 
-        with open(file_path, "w") as f:
+        with open(path, "w") as f:
             f.writelines(lines)
 
     def get_docs(self) -> Dict[str, PyDefinition]:
