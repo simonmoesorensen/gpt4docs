@@ -90,7 +90,7 @@ class File:
             f.writelines(lines)
 
     def get_docs(self) -> Dict[str, PyDefinition]:
-        return self.documentation
+        return self.documentation.values()
 
     def get_original_docs(self) -> Dict[str, PyDefinition]:
         return self.original_documentation
