@@ -32,7 +32,7 @@ def run():
     retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 6})
 
     # Prompt LLM for docstring
-    llm = LLM(retriever=retriever, chain_type="stuff")
+    llm = LLM(retriever=retriever)
 
     for file in tqdm(
         project.files,
