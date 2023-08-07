@@ -2,6 +2,9 @@ import re
 from typing import Dict
 from pathlib import Path
 from autodocs import PyDefinition
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class File:
@@ -16,6 +19,9 @@ class File:
         if isinstance(file_path, str):
             file_path = Path(file_path)
 
+        # Regex for finding functions or classes, and docstrings
+        self.re_definitions = r"""(?P<definition> *\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?:)\n( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
+
         self.content = self._read_file(file_path)
         self.file_path = file_path
 
@@ -28,13 +34,11 @@ class File:
 
     def _scan_for_definitions(self) -> None:
         """Scans the file for functions and classes and their definitions"""
-        # Regex for finding functions or classes, and docstrings
-        re_definitions = r"""(?P<definition>\S?\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?:)\n\s*(\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
 
         defs = {}
 
         # Create definitions from all matches
-        for match in re.finditer(re_definitions, self.content):
+        for match in re.finditer(self.re_definitions, self.content):
             defs[match.group("name")] = PyDefinition(
                 type=match.group("type"),
                 name=match.group("name"),
@@ -42,46 +46,55 @@ class File:
             )
         return defs
 
+    def _handle_indentation(self, match, definition) -> str:
+        # Indentation level is 4 spaces + any spaces before the definition
+        indentation_level = 4
+        indentation_level += len(re.search(r"^ *", match.group("definition")).group(0))
+
+        # Apply indentation to full docstring (with quotations)
+        indented_docstring = []
+        for line in definition.full_docstring.split("\n"):
+            # Line is empty (no indentation)
+            if line.strip() == "":
+                # Important to add empty line to avoid unwanted whitespaces
+                indented_docstring.append("")
+                continue
+
+            # Line is already indented
+            if line.startswith(" " * indentation_level):
+                indented_docstring.append(line)
+                continue
+
+            # Line is not indented, but not empty. Indent it.
+            indented_docstring.append(" " * indentation_level + line)
+
+        return "\n".join(indented_docstring)
+
     def _write_docstring(self, lines: str, definition: PyDefinition) -> str:
         """Find the definition in the file and write the docstring from the
         pydefinition object"""
         if definition.docstring is None:
             return lines
 
-        # Pattern to match when docstring exists
-        pattern_existing_doc = (
-            rf"(?P<definition>^\s*{definition.type} {definition.name}\(?.*?\)?:)\n"
-            rf"\s*\"\"\"(?P<existing_doc>[\s\S]*?)\"\"\"\n"
-        )
-        # Pattern to match when no docstring exists
-        pattern_no_doc = (
-            rf"(?P<definition>^\s*{definition.type} {definition.name}\(?.*?\(?:)\n"
+        # Regex to find specific definition
+        re_definition = (
+            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?:)\n"  # noqa: E501
+            + r"( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"
         )
 
         # Match to find indentation level
-        match = re.search(pattern_existing_doc, lines) or re.search(
-            pattern_no_doc, lines
-        )
+        match = re.search(re_definition, lines)
 
         if match is None:
+            logger.warning(
+                f"Could not find definition {definition.name} in file {self.file_path}"
+            )
             return lines
 
-        # Indentation level is 4 spaces + any spaces before the definition
-        indentation_level = 4
-        indentation_level += len(re.search(r"^\s*", match.group("definition")).group(0))
+        indented_docstring = self._handle_indentation(match, definition)
 
-        # Apply indentation to full docstring (with quotations)
-        indented_docstring = "\n".join(
-            " " * indentation_level + line if line else line
-            for line in definition.full_docstring.split("\n")
-        )
-
-        if re.search(pattern_existing_doc, lines, flags=re.DOTALL):
-            replacement = rf"\g<definition>\n{indented_docstring}\n"
-            new_code = re.sub(pattern_existing_doc, replacement, lines, flags=re.DOTALL)
-        else:
-            replacement = rf"\g<definition>\n{indented_docstring}\n"
-            new_code = re.sub(pattern_no_doc, replacement, lines)
+        replacement = rf"\g<definition>\n{indented_docstring}\n"
+        new_code = re.sub(re_definition, replacement, lines, flags=re.MULTILINE)
 
         return new_code
 
