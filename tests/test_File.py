@@ -165,7 +165,7 @@ def test_save(file, tmp_path):
     with p.open() as f:
         content = f.read()
 
-    expected_content = 'def test_func():\n    """\n    New docstring\n        Its good\n    """\n    print("hello world")\n    pass\n'  # noqa: E501
+    expected_content = 'def test_func():\n    """\n    New docstring\n    Its good\n    """\n    print("hello world")\n    pass\n'  # noqa: E501
     assert content == expected_content
     assert (tmp_path / "sub" / "test.py").exists() and (
         tmp_path / "sub_new" / "test.py"
