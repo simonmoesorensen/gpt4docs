@@ -35,7 +35,7 @@ def run():
     llm = LLM(retriever=retriever)
 
     for file in tqdm(
-        project.files,
+        project.files.values(),
         desc="Iterating over files",
         position=0,
         leave=True,
@@ -52,7 +52,7 @@ def run():
             # Add definition type and name to tqdm
             tqdm.write(f"Definition: {definition.type} {definition.name}")
             docstring = llm(definition.name)
-            file.set_documentation(definition.name, docstring)
+            file.set_docstring(definition.name, docstring)
 
     project.save()
 
