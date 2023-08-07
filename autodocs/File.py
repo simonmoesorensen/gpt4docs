@@ -8,8 +8,8 @@ class File:
     """This class will scan a Python file and return all the functions
     and classes in it"""
 
-    original_documentation: Dict[str, PyDefinition] = {}
-    documentation: Dict[str, PyDefinition] = {}
+    original_definitions: Dict[str, PyDefinition] = {}
+    definitions: Dict[str, PyDefinition] = {}
 
     def __init__(self, file_path: str | Path) -> None:
         """Initializes the Scanner with the file path"""
@@ -19,15 +19,15 @@ class File:
         self.content = self._read_file(file_path)
         self.file_path = file_path
 
-        self.original_documentation = self._scan_for_documentation()
-        self.documentation = self.original_documentation
+        self.original_definitions = self._scan_for_definitions()
+        self.definitions = self.original_definitions
 
     def _read_file(self, file_path):
         with open(file_path, "r") as f:
             return f.read()
 
-    def _scan_for_documentation(self) -> None:
-        """Scans the file for functions and classes and their documentation"""
+    def _scan_for_definitions(self) -> None:
+        """Scans the file for functions and classes and their definitions"""
         # Regex for finding functions or classes, and docstrings
         re_definitions = r"""(?P<definition>\S?\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?:)\n\s*(\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
 
@@ -85,15 +85,15 @@ class File:
 
         return new_code
 
-    def set_documentation(self, name: str, docstring: str) -> None:
-        """Set the documentation for a given function or class in the file"""
-        self.documentation[name].docstring = docstring
+    def set_docstring(self, name: str, docstring: str) -> None:
+        """Set the definitions for a given function or class in the file"""
+        self.definitions[name].docstring = docstring
 
     def save(self, path: Path = None, overwrite: bool = False) -> None:
-        """Writes the new documentation to the file"""
+        """Writes the new definitions to the file"""
         lines = self.content
 
-        for definition in self.documentation.values():
+        for definition in self.definitions.values():
             lines = self._write_docstring(lines, definition)
 
         if overwrite:
@@ -105,10 +105,10 @@ class File:
             f.writelines(lines)
 
     def get_docs(self) -> Dict[str, PyDefinition]:
-        return self.documentation.values()
+        return self.definitions.values()
 
     def get_original_docs(self) -> Dict[str, PyDefinition]:
-        return self.original_documentation
+        return self.original_definitions
 
     def __str__(self) -> str:
-        return str(self.documentation)
+        return str(self.definitions)

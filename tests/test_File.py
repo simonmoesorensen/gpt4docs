@@ -6,40 +6,40 @@ from pathlib import Path
 def test_init(file):
     assert isinstance(file, File)
     assert file.file_path == Path("tests/data/test.py")
-    assert isinstance(file.original_documentation, dict)
-    assert isinstance(file.documentation, dict)
+    assert isinstance(file.original_definitions, dict)
+    assert isinstance(file.definitions, dict)
 
 
-def test_scan_for_documentation(file):
-    assert "test_func" in file.documentation
-    assert "test_func2" in file.documentation
-    assert "TestClass" in file.documentation
-    assert "no_docstring" in file.documentation
+def test_scan_for_definitions(file):
+    assert "test_func" in file.definitions
+    assert "test_func2" in file.definitions
+    assert "TestClass" in file.definitions
+    assert "no_docstring" in file.definitions
 
-    func1 = file.documentation["test_func"]
+    func1 = file.definitions["test_func"]
     assert isinstance(func1, PyDefinition)
     assert func1.type == "def"
     assert func1.docstring == "This is a test function"
 
-    func2 = file.documentation["test_func2"]
+    func2 = file.definitions["test_func2"]
     expected_docstring = "This is a test function\n\n    with multiple lines"
     assert func2.docstring == expected_docstring
     assert func2.type == "def"
 
-    func3 = file.documentation["TestClass"]
+    func3 = file.definitions["TestClass"]
     expected_docstring = "This is a test class\n    with\n    other\n    syntax\n\n    "
     assert func3.docstring == expected_docstring
     assert func3.type == "class"
 
-    func4 = file.documentation["no_docstring"]
+    func4 = file.definitions["no_docstring"]
     assert func4.docstring is None
     assert func4.type == "def"
 
 
-def test_set_documentation(file):
+def test_set_docstring(file):
     new_docstring = "This is a new docstring"
-    file.set_documentation("test_func", new_docstring)
-    assert file.documentation["test_func"].docstring == new_docstring
+    file.set_docstring("test_func", new_docstring)
+    assert file.definitions["test_func"].docstring == new_docstring
 
 
 def test_replace_function_docstring(tmp_path):
@@ -152,7 +152,7 @@ def test_save(file, tmp_path):
 
     file = File(str(p))
     print(file.content)
-    file.set_documentation("test_func", "New docstring\n    Its good")
+    file.set_docstring("test_func", "New docstring\n    Its good")
 
     # Save in new dir
     new_dir = tmp_path / "sub_new"

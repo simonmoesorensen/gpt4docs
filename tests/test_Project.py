@@ -19,7 +19,7 @@ def test_project_save(tmp_path, project):
         type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
     )
     file = project.files[0]
-    file.set_documentation("test_func", new_doc.docstring)
+    file.set_docstring("test_func", new_doc.docstring)
     project.save(suffix="_new")
 
     new_root = project.project_root.parent / (project.project_root.name + "_new")
