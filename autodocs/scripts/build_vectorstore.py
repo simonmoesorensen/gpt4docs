@@ -42,7 +42,7 @@ def load_documents_from_folder(
     docs_count = 0
     documents = []
 
-    for file in folder.iterdir():
+    for file in folder.glob("**/*.py"):
         if file.is_file():
             documents.append(Blob(data=file.read_bytes(), path=file.name))
             docs_count += 1
