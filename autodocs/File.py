@@ -50,19 +50,37 @@ class File:
 
         # Pattern to match when docstring exists
         pattern_existing_doc = (
-            rf"(?P<definition>{definition.type} {definition.name}\(?.*?\)?:)\n"
+            rf"(?P<definition>^\s*{definition.type} {definition.name}\(?.*?\)?:)\n"
             rf"\s*\"\"\"(?P<existing_doc>[\s\S]*?)\"\"\"\n"
         )
         # Pattern to match when no docstring exists
         pattern_no_doc = (
-            rf"(?P<definition>{definition.type} {definition.name}\(?.*?\(?:)\n"
+            rf"(?P<definition>^\s*{definition.type} {definition.name}\(?.*?\(?:)\n"
+        )
+
+        # Match to find indentation level
+        match = re.search(pattern_existing_doc, lines) or re.search(
+            pattern_no_doc, lines
+        )
+
+        if match is None:
+            return lines
+
+        # Indentation level is 4 spaces + any spaces before the definition
+        indentation_level = 4
+        indentation_level += len(re.search(r"^\s*", match.group("definition")).group(0))
+
+        # Apply indentation to full docstring (with quotations)
+        indented_docstring = "\n".join(
+            " " * indentation_level + line if line else line
+            for line in definition.full_docstring.split("\n")
         )
 
         if re.search(pattern_existing_doc, lines, flags=re.DOTALL):
-            replacement = rf'\g<definition>\n    """{definition.docstring}"""\n'
+            replacement = rf"\g<definition>\n{indented_docstring}\n"
             new_code = re.sub(pattern_existing_doc, replacement, lines, flags=re.DOTALL)
         else:
-            replacement = rf'\g<definition>\n    """{definition.docstring}"""\n'
+            replacement = rf"\g<definition>\n{indented_docstring}\n"
             new_code = re.sub(pattern_no_doc, replacement, lines)
 
         return new_code
