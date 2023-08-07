@@ -1,6 +1,7 @@
 import logging
 
-LOGGING_LEVEL = logging.DEBUG
+# LOGGING_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.INFO
 
 logging.basicConfig(
     level=LOGGING_LEVEL,
@@ -13,3 +14,4 @@ logging.basicConfig(
 
 # Ignore logs from packages
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("chromadb").setLevel(logging.WARNING)
