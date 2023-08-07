@@ -11,7 +11,10 @@ class Project:
             project_root = Path(project_root)
 
         self.project_root = project_root
-        self.files = list(map(File, self.project_root.glob("**/*.py")))
+        self.files = {
+            file_path.name: File(file_path)
+            for file_path in self.project_root.glob("**/*.py")
+        }
 
     def save(self, suffix: str = "_new", overwrite: bool = False):
         """Save the project to a new folder."""
@@ -21,7 +24,7 @@ class Project:
         else:
             new_root = self.project_root.parent / (self.project_root.name + suffix)
 
-        for file in self.files:
+        for file in self.files.values():
             if not overwrite:
                 # Replace name of the project root with the new root name
                 dir_ = new_root / file.file_path.relative_to(self.project_root)
