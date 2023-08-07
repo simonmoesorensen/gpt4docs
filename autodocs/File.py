@@ -29,14 +29,14 @@ class File:
     def _scan_for_documentation(self) -> None:
         """Scans the file for functions and classes and their documentation"""
         # Regex for finding functions or classes, and docstrings
-        re_definitions = r"""(?P<definition>\S[def|class]* (?P<name>\w*) *\(?.*?\)?:)\n\s*(\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
+        re_definitions = r"""(?P<definition>\S?\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?:)\n\s*(\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
 
         defs = {}
 
         # Create definitions from all matches
         for match in re.finditer(re_definitions, self.content):
             defs[match.group("name")] = PyDefinition(
-                type=match.group("definition").split(" ")[0],
+                type=match.group("type"),
                 name=match.group("name"),
                 docstring=match.group("docstring"),
             )
