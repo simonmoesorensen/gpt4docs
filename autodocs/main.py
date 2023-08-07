@@ -40,14 +40,19 @@ def run():
         position=0,
         leave=True,
     ):
+        # Add file name to tqdm
+        tqdm.write(f"File: {file.file_path}")
+
         for definition in tqdm(
             file.get_docs(),
             desc="Iterating over definitions",
             position=1,
             leave=False,
         ):
+            # Add definition type and name to tqdm
+            tqdm.write(f"Definition: {definition.type} {definition.name}")
             docstring = llm(definition.name)
-            definition.docstring = docstring
+            file.set_documentation(definition.name, docstring)
 
     project.save()
 
