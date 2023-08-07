@@ -10,7 +10,7 @@ def test_project_init(project_root):
 
 def test_project_files(project):
     files = list(project.files)
-    assert len(files) == 2
+    assert len(files) == 6
     assert isinstance(files[0], File)
 
 
@@ -38,6 +38,10 @@ def test_project_save(tmp_path, project):
 def test_project_tree(project):
     expected_str = """├── test_package/
 │   ├── func1.py
+│   ├── terminal.py
+│   ├── time_manager.py
+│   ├── weather_manager.py
+│   ├── main.py
 │   ├── package1.py
 └──"""
     assert str(project) == expected_str
