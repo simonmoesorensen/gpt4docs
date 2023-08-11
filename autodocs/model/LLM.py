@@ -63,17 +63,12 @@ class LLM:
         )
 
     def run(self, definition_name: str) -> str:
-        """
-        Call the API and return the response
-
-        """
         response = self.chain.run(definition_name)
-        return response
+        return self._format_response(response)
 
     async def arun(self, definition_name: str) -> str:
-        """
-        Call the API and return the response
-
-        """
         response = await self.chain.arun(query=definition_name)
-        return response
+        return self._format_response(response)
+
+    def _format_response(self, response: str) -> str:
+        return response.replace('"""', "")

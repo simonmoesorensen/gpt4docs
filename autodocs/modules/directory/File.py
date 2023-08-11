@@ -1,7 +1,7 @@
 import re
 from typing import Dict
 from pathlib import Path
-from autodocs import PyDefinition
+from autodocs.modules.datamodels import PyDefinition
 import logging
 
 logger = logging.getLogger(__name__)

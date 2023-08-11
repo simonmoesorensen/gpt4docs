@@ -1,5 +1,5 @@
 from pathlib import Path
-from autodocs import File
+from autodocs.modules.directory import File
 import logging
 
 logger = logging.getLogger(__name__)
