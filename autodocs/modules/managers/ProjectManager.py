@@ -8,10 +8,9 @@ class ProjectManager:
         self.project = Project(Path(project_path))
 
     def update_docstrings(self, all_docstrings: Dict[str, Dict]):
-        for file_path, file_docstrings in all_docstrings.items():
-            print(file_docstrings)
-            for def_name, docstring in file_docstrings.items():
-                self.project.files[file_path].set_docstring(def_name, docstring)
+        for file_path, definitions in all_docstrings.items():
+            for def_ in definitions:
+                self.project.files[str(file_path.name)].set_definition(def_)
 
     def save(self):
         self.project.save()

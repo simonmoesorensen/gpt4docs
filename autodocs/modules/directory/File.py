@@ -102,6 +102,9 @@ class File:
         """Set the definitions for a given function or class in the file"""
         self.definitions[name].docstring = docstring
 
+    def set_definition(self, definition: PyDefinition) -> None:
+        self.definitions[definition.name] = definition
+
     def save(self, path: Path = None, overwrite: bool = False) -> None:
         """Writes the new definitions to the file"""
         lines = self.content
