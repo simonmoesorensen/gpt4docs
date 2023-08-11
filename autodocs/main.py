@@ -56,4 +56,4 @@ if __name__ == "__main__":
     start = time.time()
     asyncio.run(run(llm))
     print("Finished")
-    print(f"Time taken: {time.time() - start}")
+    print(f"Time taken: {time.time() - start:.2f}s")
