@@ -1,4 +1,5 @@
 import autodocs.logger_config  # noqa: F401
+import os
 import asyncio
 import time
 from autodocs import ProjectManager, VectorStoreManager, LLMManager
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 class MainApplication:
     def __init__(self, args):
         self._verify_args(args)
+        self._verify_env()
 
         if args.build:
             VectorStoreManager.build(args.vectorstore_path, args.project_path)
@@ -25,7 +27,9 @@ class MainApplication:
     async def run(self):
         logger.info("Running")
         start = time.time()
-        docstrings = await self.llm_manager.generate_docstrings(self.project_manager)
+        docstrings = await self.llm_manager.generate_docstrings(
+            self.project_manager.get_files()
+        )
         self.project_manager.update_docstrings(docstrings)
 
         logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
@@ -45,6 +49,12 @@ class MainApplication:
             raise ValueError(
                 "Vectorstore is not built. Run module with `--build` argument. "
                 "`python3 -m autodocs --build ..."
+            )
+
+    def _verify_env(self):
+        if os.getenv("OPENAI_API_KEY") is None:
+            raise ValueError(
+                "OPENAI_API_KEY environment variable must be set to use LLM"
             )
 
     @staticmethod
