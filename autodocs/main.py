@@ -1,12 +1,13 @@
 """Main module."""
 import autodocs.logger_config  # noqa: F401
 
+import asyncio
+import time
 from dotenv import load_dotenv
 from pathlib import Path
 from autodocs import LLM, Project
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-from tqdm import tqdm
 
 from autodocs.scripts.build_vectorstore import build_vectorstore
 
@@ -17,7 +18,7 @@ project = Project(Path(__file__).parent)
 persist_directory = project.project_root.parent / "data" / ".chroma"
 
 
-def run():
+def setup():
     build_vectorstore(
         persist_directory=persist_directory,
         documents_folder=project.project_root,
@@ -32,26 +33,18 @@ def run():
     retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 6})
 
     # Prompt LLM for docstring
-    llm = LLM(retriever=retriever)
+    llm = LLM(model_name="gpt-3.5-turbo-16k", retriever=retriever)
+    return llm
 
-    for file in tqdm(
-        project.files.values(),
-        desc="Iterating over files",
-        position=0,
-        leave=True,
-    ):
-        # Add file name to tqdm
-        tqdm.write(f"File: {file.file_path}")
 
-        for definition in tqdm(
-            file.get_docs(),
-            desc="Iterating over definitions",
-            position=1,
-            leave=False,
-        ):
-            # Add definition type and name to tqdm
-            tqdm.write(f"Definition: {definition.type} {definition.name}")
-            docstring = llm(definition.name)
+async def run(llm):
+    for file in project.files.values():
+        print(f"File: {file.file_path}")
+
+        tasks = [llm.arun(definition.name) for definition in file.get_docs()]
+        docstrings = await asyncio.gather(*tasks)
+
+        for definition, docstring in zip(file.get_docs(), docstrings):
             file.set_docstring(definition.name, docstring)
 
     project.save()
@@ -59,5 +52,8 @@ def run():
 
 if __name__ == "__main__":
     print("Running")
-    run()
-    print("Ran")
+    llm = setup()
+    start = time.time()
+    asyncio.run(run(llm))
+    print("Finished")
+    print(f"Time taken: {time.time() - start}")
