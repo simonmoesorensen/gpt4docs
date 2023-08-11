@@ -62,10 +62,18 @@ class LLM:
             retriever=self.retriever,
         )
 
-    def __call__(self, definition_name: str) -> str:
+    def run(self, definition_name: str) -> str:
         """
         Call the API and return the response
 
         """
         response = self.chain.run(definition_name)
+        return response
+
+    async def arun(self, definition_name: str) -> str:
+        """
+        Call the API and return the response
+
+        """
+        response = await self.chain.arun(query=definition_name)
         return response
