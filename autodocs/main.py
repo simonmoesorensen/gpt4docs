@@ -1,59 +1,79 @@
-"""Main module."""
 import autodocs.logger_config  # noqa: F401
-
 import asyncio
 import time
+from autodocs import ProjectManager, VectorStoreManager, LLMManager
 from dotenv import load_dotenv
 from pathlib import Path
-from autodocs import LLM, Project
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
-
-from autodocs.scripts.build_vectorstore import build_vectorstore
+import logging
+import argparse
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 
-project = Project(Path(__file__).parent)
-persist_directory = project.project_root.parent / "data" / ".chroma"
+class MainApplication:
+    def __init__(self, args):
+        self._verify_args(args)
 
+        if args.build:
+            VectorStoreManager.build(args.vectorstore_path, args.project_path)
 
-def setup():
-    build_vectorstore(
-        persist_directory=persist_directory,
-        documents_folder=project.project_root,
-    )
+        self.project_manager = ProjectManager(args.project_path)
+        self.vector_store_manager = VectorStoreManager(args.vectorstore_path)
+        self.llm_manager = LLMManager(self.vector_store_manager.vectorstore)
 
-    # Index files with vectorstore
-    vectorstore = Chroma(
-        collection_name="documents",
-        persist_directory=str(persist_directory),
-        embedding_function=OpenAIEmbeddings(),
-    )
-    retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 6})
+    async def run(self):
+        logger.info("Running")
+        start = time.time()
+        docstrings = await self.llm_manager.generate_docstrings(self.project_manager)
+        self.project_manager.update_docstrings(docstrings)
 
-    # Prompt LLM for docstring
-    llm = LLM(model_name="gpt-3.5-turbo-16k", retriever=retriever)
-    return llm
+        logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
+        self.project_manager.save()
 
+    def __call__(self, args: argparse.Namespace):
+        if args.build:
+            self.vector_store_manager.build(self.project_manager.project.project_root)
+        else:
+            asyncio.run(self.run())
 
-async def run(llm):
-    for file in project.files.values():
-        print(f"File: {file.file_path}")
+    def _verify_args(self, args):
+        if not args.project_path.exists():
+            raise ValueError(f"Project path {args.project_path} does not exist")
 
-        tasks = [llm.arun(definition.name) for definition in file.get_docs()]
-        docstrings = await asyncio.gather(*tasks)
+        if not args.build and not VectorStoreManager.is_built(args.vectorstore_path):
+            raise ValueError(
+                "Vectorstore is not built. Run module with `--build` argument. "
+                "`python3 -m autodocs --build ..."
+            )
 
-        for definition, docstring in zip(file.get_docs(), docstrings):
-            file.set_docstring(definition.name, docstring)
+    @staticmethod
+    def parse_args():
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "project_path",
+            type=Path,
+            help="Path to root of project to write documentation for",
+        )
+        parser.add_argument(
+            "vectorstore_path",
+            type=Path,
+            default=Path.cwd() / ".vectorstore",
+            nargs="?",
+            help="Path to vectorstore directory",
+        )
+        parser.add_argument(
+            "--build",
+            action="store_true",
+            help="Build vectorstore",
+        )
+        args = parser.parse_args()
 
-    project.save()
+        logger.info(f"Arguments: {args}")
+        return args
 
 
 if __name__ == "__main__":
-    print("Running")
-    llm = setup()
-    start = time.time()
-    asyncio.run(run(llm))
-    print("Finished")
-    print(f"Time taken: {time.time() - start:.2f}s")
+    args = MainApplication.parse_args()
+    app = MainApplication(args)
+    asyncio.run(app.run())
