@@ -27,10 +27,10 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 run: ## Run the application
-	@python autodocs/main.py autodocs
+	@python -m autodocs autodocs
 
 run-build: ## Run the application and build the vectorstore
-	@python autodocs/main.py autodocs --build
+	@python -m autodocs autodocs --build
 
 init: ## Initialize environment variables
 	@echo "Initializing environment variables...";
