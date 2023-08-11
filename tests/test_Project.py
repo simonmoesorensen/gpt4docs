@@ -20,11 +20,11 @@ def test_project_save(tmp_path, project):
     )
     file = project.files["func1.py"]
     file.set_docstring("test_func", new_doc.docstring)
-    project.save(suffix="_new")
+    project.save(suffix="_my_suffix")
 
-    new_root = project.project_root.parent / (project.project_root.name + "_new")
-
-    assert new_root.name == "test_package_new"
+    new_root = project.project_root.parent / (project.project_root.name + "_my_suffix")
+    assert new_root.exists()
+    assert new_root.name == "test_package_my_suffix"
 
     # Verify that the file has been placed in the new directory with a new docstring
     p = new_root / file.file_path.relative_to(project.project_root)

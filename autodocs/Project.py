@@ -16,7 +16,7 @@ class Project:
             for file_path in self.project_root.glob("**/*.py")
         }
 
-    def save(self, suffix: str = "_new", overwrite: bool = False):
+    def save(self, suffix: str = "_commented", overwrite: bool = False):
         """Save the project to a new folder."""
         if overwrite:
             dir_ = self.project_root

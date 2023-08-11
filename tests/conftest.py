@@ -27,7 +27,7 @@ def teardown():
     # Run test
     yield
 
-    # Remove all directories with "_new" suffix recursively
-    new_dirs = TEST_DATA.rglob("*_new")
+    # Remove all directories with "_my_suffix" suffix recursively
+    new_dirs = TEST_DATA.rglob("*_my_suffix")
     for dir_ in new_dirs:
         os.system(f"rm -rf {dir_}")
