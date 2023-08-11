@@ -111,8 +111,8 @@ def embed_documents(
 
 
 def build_vectorstore(
-    persist_directory,
-    documents_folder,
+    persist_directory: Path,
+    documents_folder: Path,
     chunk_size=2000,
     docs_per_iter=25,
 ):
