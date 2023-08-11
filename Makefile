@@ -26,6 +26,9 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
+run: ## Run the application
+	@python autodocs/main.py
+
 init: ## Initialize environment variables
 	@echo "Initializing environment variables...";
 	@read -p "Please enter the Open AI API key: " key; \
