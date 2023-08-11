@@ -14,4 +14,6 @@ logging.basicConfig(
 
 # Ignore logs from packages
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.getLogger("chromadb.db.index.hnswlib").setLevel(logging.CRITICAL)
+logging.getLogger("chromadb.segment.impl.vector.local_persistent_hnsw").setLevel(
+    logging.CRITICAL
+)
