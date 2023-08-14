@@ -1,4 +1,5 @@
 import logging
+import os
 
 LOGGING_LEVEL = logging.INFO
 LOGGING_FORMAT = (
@@ -15,6 +16,9 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 console_handler.setFormatter(logging.Formatter(LOGGING_FORMAT))
 logger.addHandler(console_handler)
+
+if os.path.exists("gpt4docs.debug.log"):
+    os.remove("gpt4docs.debug.log")
 
 # Add file handler with DEBUG level
 file_handler = logging.FileHandler("gpt4docs.debug.log")
