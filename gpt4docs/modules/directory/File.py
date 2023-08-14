@@ -78,8 +78,8 @@ class File:
 
         # Regex to find specific definition
         re_definition = (
-            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?:)\n"  # noqa: E501
-            + r"(\s* *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"
+            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?:)\n*"  # noqa: E501
+            + r"( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"
         )
 
         # Match to find indentation level
@@ -92,8 +92,11 @@ class File:
             return lines
 
         indented_docstring = self._handle_indentation(match, definition)
-
         replacement = rf"\g<definition>\n{indented_docstring}\n"
+
+        if match.group("type") == "class":
+            replacement += "\n"
+
         new_code = re.sub(re_definition, replacement, lines, flags=re.MULTILINE)
 
         return new_code
