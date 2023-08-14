@@ -1,4 +1,4 @@
-from autodocs import File, PyDefinition, PyDefinitionTypeEnum, Project
+from gpt4docs import File, PyDefinition, PyDefinitionTypeEnum, Project
 from pathlib import Path
 
 

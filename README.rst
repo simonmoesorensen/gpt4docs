@@ -1,16 +1,16 @@
 ========
-AutoDocs
+gpt4docs
 ========
 
 
-.. image:: https://img.shields.io/pypi/v/autodocs.svg
-        :target: https://pypi.python.org/pypi/autodocs
+.. image:: https://img.shields.io/pypi/v/gpt4docs.svg
+        :target: https://pypi.python.org/pypi/gpt4docs
 
-.. image:: https://img.shields.io/travis/simonmoesorensen/autodocs.svg
-        :target: https://travis-ci.com/simonmoesorensen/autodocs
+.. image:: https://img.shields.io/travis/simonmoesorensen/gpt4docs.svg
+        :target: https://travis-ci.com/simonmoesorensen/gpt4docs
 
-.. image:: https://readthedocs.org/projects/autodocs/badge/?version=latest
-        :target: https://autodocs.readthedocs.io/en/latest/?version=latest
+.. image:: https://readthedocs.org/projects/gpt4docs/badge/?version=latest
+        :target: https://gpt4docs.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
 
@@ -20,7 +20,7 @@ Python package using AI to generate documentation for your codebase
 
 
 * Free software: MIT license
-* Documentation: https://autodocs.readthedocs.io.
+* Documentation: https://gpt4docs.readthedocs.io.
 
 
 Features

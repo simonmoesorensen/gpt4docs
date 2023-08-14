@@ -1,8 +1,8 @@
-import autodocs.logger_config  # noqa: F401
+import gpt4docs.logger_config  # noqa: F401
 import os
 import asyncio
 import time
-from autodocs import ProjectManager, VectorStoreManager, LLMManager
+from gpt4docs import ProjectManager, VectorStoreManager, LLMManager
 from dotenv import load_dotenv
 from pathlib import Path
 import logging
@@ -48,7 +48,7 @@ class MainApplication:
         if not args.build and not VectorStoreManager.is_built(args.vectorstore_path):
             raise ValueError(
                 "Vectorstore is not built. Run module with `--build` argument. "
-                "`python3 -m autodocs --build ..."
+                "`python3 -m gpt4docs --build ..."
             )
 
     def _verify_env(self):

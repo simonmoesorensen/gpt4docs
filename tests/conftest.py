@@ -1,5 +1,5 @@
 import pytest
-from autodocs import File, Project
+from gpt4docs import File, Project
 from pathlib import Path
 import os
 

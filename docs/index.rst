@@ -1,4 +1,4 @@
-Welcome to AutoDocs's documentation!
+Welcome to gpt4docs's documentation!
 ======================================
 
 .. toctree::

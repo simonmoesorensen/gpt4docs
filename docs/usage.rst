@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use AutoDocs in a project::
+To use gpt4docs in a project::
 
-    import autodocs
+    import gpt4docs

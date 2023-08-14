@@ -1,1 +1,1 @@
-"""Unit test package for autodocs."""
+"""Unit test package for gpt4docs."""

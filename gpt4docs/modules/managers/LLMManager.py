@@ -1,8 +1,8 @@
-from autodocs.model import LLM
+from gpt4docs.model import LLM
 import asyncio
 import logging
 
-from autodocs.modules.directory import File
+from gpt4docs.modules.directory import File
 from typing import List
 
 logger = logging.getLogger(__name__)

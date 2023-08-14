@@ -27,10 +27,10 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 run: ## Run the application
-	@python -m autodocs autodocs
+	@python -m gpt4docs gpt4docs
 
 run-build: ## Run the application and build the vectorstore
-	@python -m autodocs autodocs --build
+	@python -m gpt4docs gpt4docs --build
 
 init: ## Initialize environment variables
 	@echo "Initializing environment variables...";
@@ -60,9 +60,9 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint/flake8: ## check style with flake8
-	flake8 autodocs tests
+	flake8 gpt4docs tests
 lint/black: ## check style with black
-	black --check autodocs tests
+	black --check gpt4docs tests
 
 lint: lint/flake8 lint/black ## check style
 
@@ -73,15 +73,15 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source autodocs -m pytest
+	coverage run --source gpt4docs -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/autodocs.rst
+	rm -f docs/gpt4docs.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ autodocs
+	sphinx-apidoc -o docs/ gpt4docs
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html

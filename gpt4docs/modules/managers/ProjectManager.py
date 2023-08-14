@@ -1,4 +1,4 @@
-from autodocs.modules.directory import Project
+from gpt4docs.modules.directory import Project
 from typing import Dict
 from pathlib import Path
 

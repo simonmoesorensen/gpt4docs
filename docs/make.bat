@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=autodocs
+set SPHINXPROJ=gpt4docs
 
 if "%1" == "" goto help
 

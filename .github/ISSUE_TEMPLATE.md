@@ -1,4 +1,4 @@
-* AutoDocs version:
+* gpt4docs version:
 * Python version:
 * Operating System:
 

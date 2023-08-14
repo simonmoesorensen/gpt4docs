@@ -1,5 +1,5 @@
-from autodocs import File
-from autodocs import PyDefinition, PyDefinitionTypeEnum
+from gpt4docs import File
+from gpt4docs import PyDefinition, PyDefinitionTypeEnum
 from pathlib import Path
 
 

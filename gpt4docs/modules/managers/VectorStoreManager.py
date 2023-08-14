@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from pydantic import PathNotADirectoryError
-from autodocs.scripts.build_vectorstore import build_vectorstore
+from gpt4docs.scripts.build_vectorstore import build_vectorstore
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 

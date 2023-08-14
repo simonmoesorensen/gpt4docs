@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "autodocs"
+name = "gpt4docs"
 version = "0.1.0"
-description = ""
+description = "Python package using AI to generate documentation for your codebase"
 authors = ["Simon Moe Sørensen <sso@2021.ai>"]
 readme = "README.rst"
 

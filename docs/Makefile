@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = autodocs
+SPHINXPROJ    = gpt4docs
 SOURCEDIR     = .
 BUILDDIR      = _build
 
