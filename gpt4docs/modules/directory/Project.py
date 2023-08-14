@@ -19,7 +19,6 @@ class Project:
     def save(self, suffix: str = "_commented", overwrite: bool = False):
         """Save the project to a new folder."""
         if overwrite:
-            dir_ = self.project_root
             new_root = self.project_root
         else:
             new_root = self.project_root.parent / (self.project_root.name + suffix)
@@ -29,9 +28,14 @@ class Project:
                 # Replace name of the project root with the new root name
                 dir_ = new_root / file.file_path.relative_to(self.project_root)
                 dir_.parent.mkdir(parents=True, exist_ok=True)
-                file.save(dir_, overwrite)
+                logger.debug(f"Saving {file.file_path} to {dir_}")
+                file.save(dir_, overwrite=False)
+            else:
+                logger.debug(f"Overwrites {file.file_path}")
+                file.save(overwrite=True)
 
         logger.info(f"Saved {len(self.files)} files to {new_root}")
+        return new_root
 
     def _tree(self, dir_path: Path, padding: str = "", print_files: bool = True):
         """Represent the directory tree as a string."""
