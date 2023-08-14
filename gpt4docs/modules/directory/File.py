@@ -1,4 +1,5 @@
 import re
+import black
 from typing import Dict
 from pathlib import Path
 from gpt4docs.modules.datamodels import PyDefinition
@@ -29,8 +30,14 @@ class File:
         self.definitions = self.original_definitions
 
     def _read_file(self, file_path):
+        """Read file and format with black8 before returning content"""
+
         with open(file_path, "r") as f:
-            return f.read()
+            content = f.read()
+
+        formatted_content = black.format_str(content, mode=black.FileMode())
+
+        return formatted_content
 
     def _scan_for_definitions(self) -> None:
         """Scans the file for functions and classes and their definitions"""
