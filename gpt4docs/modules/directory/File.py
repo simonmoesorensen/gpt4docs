@@ -78,12 +78,12 @@ class File:
 
         # Regex to find specific definition
         re_definition = (
-            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?:)\n*"  # noqa: E501
+            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?.$)\n*"  # noqa: E501
             + r"( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"
         )
 
         # Match to find indentation level
-        match = re.search(re_definition, lines)
+        match = re.search(re_definition, lines, flags=re.MULTILINE)
 
         if match is None:
             logger.warning(

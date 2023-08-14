@@ -108,6 +108,22 @@ def test_replace_class_with_args_docstring(tmp_path):
     assert new_content == expected_content
 
 
+def test_replace_function_with_args_and_types_docstring(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        'def test_func(arg1: str, arg2: int) -> float:\n    """This is a test class"""\n    pass\n'  # noqa: E501
+    )
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'def test_func(arg1: str, arg2: int) -> float:\n    """\n    New docstring\n    """\n    pass\n'  # noqa: E501
+    assert new_content == expected_content
+
+
 def test_add_function_docstring_3_new_lines(tmp_path):
     p = tmp_path / "test.py"
     p.write_text("def test_func():\n\n\n    pass\n")
