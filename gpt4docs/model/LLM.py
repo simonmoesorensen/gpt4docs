@@ -47,7 +47,7 @@ class LLM:
                     open(prompt_dir / "qa.txt").read()
                 ),
                 HumanMessagePromptTemplate.from_template(
-                    "Write a docstring for the following definition: {question}"
+                    "Write a docstring for the following definition: {question}\nGenerated Docstring:"  # noqa: E501
                 ),
             ]
         )
