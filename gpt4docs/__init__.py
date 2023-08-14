@@ -9,3 +9,4 @@ from gpt4docs.modules.datamodels.PyDefinition import PyDefinition, PyDefinitionT
 from gpt4docs.modules.directory.File import File
 from gpt4docs.modules.directory.Project import Project
 from gpt4docs.model.LLM import LLM
+from gpt4docs.MainApplication import MainApplication
