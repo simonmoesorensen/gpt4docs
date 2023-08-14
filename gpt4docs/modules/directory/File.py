@@ -21,7 +21,7 @@ class File:
             file_path = Path(file_path)
 
         # Regex for finding functions or classes, and docstrings
-        self.re_definitions = r"""(?P<definition> *\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?:)\n( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n?)?"""  # noqa: E501
+        self.re_definitions = r"""(?P<definition> *\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
 
         self.content = self._read_file(file_path)
         self.file_path = file_path
@@ -45,7 +45,7 @@ class File:
         defs = {}
 
         # Create definitions from all matches
-        for match in re.finditer(self.re_definitions, self.content):
+        for match in re.finditer(self.re_definitions, self.content, flags=re.MULTILINE):
             defs[match.group("name")] = PyDefinition(
                 type=match.group("type"),
                 name=match.group("name"),
