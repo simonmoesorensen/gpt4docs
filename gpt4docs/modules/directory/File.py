@@ -21,7 +21,7 @@ class File:
             file_path = Path(file_path)
 
         # Regex for finding functions or classes, and docstrings
-        self.re_definitions = r"""(?P<definition> *\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
+        self.re_definitions = r"""(?P<definition>^.*\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
 
         self.content = self._read_file(file_path)
         self.file_path = file_path
@@ -85,7 +85,7 @@ class File:
 
         # Regex to find specific definition
         re_definition = (
-            rf"(?P<definition> *\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?.$)\n*"  # noqa: E501
+            rf"(?P<definition>^.*\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?.$)\n*"  # noqa: E501
             + r"( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"
         )
 
