@@ -21,6 +21,7 @@ class LLMManager:
                 self._generate_docstring(definition) for definition in file.get_docs()
             ]
             definitions = await asyncio.gather(*tasks)
+            logger.debug(definitions)
             all_docstrings.update({file.file_path: definitions})
 
         logger.info("Finished generating docstrings")
