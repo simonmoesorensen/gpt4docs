@@ -20,6 +20,10 @@ class MainApplication:
 
         if args.build:
             VectorStoreManager.build(args.vectorstore_path, args.project_path)
+        else:
+            logger.warning(
+                "Not building vectorstore. Any recent changes will not be used to generate documentation. If you want to build the vectorstore, run with `--build` argument."  # noqa: E501
+            )
 
         self.project_manager = ProjectManager(args.project_path)
         self.vector_store_manager = VectorStoreManager(args.vectorstore_path)
