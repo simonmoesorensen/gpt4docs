@@ -22,7 +22,7 @@ class LLMManager:
             ]
             definitions = await asyncio.gather(*tasks)
             logger.debug(definitions)
-            all_docstrings.update({file.file_path: definitions})
+            all_docstrings.update({file: definitions})
 
         logger.info("Finished generating docstrings")
         return all_docstrings

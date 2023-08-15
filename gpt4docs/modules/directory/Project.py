@@ -12,7 +12,7 @@ class Project:
 
         self.project_root = project_root
         self.files = {
-            str(file_path.relative_to(self.project_root)): File(file_path)
+            self.get_file_path_by_path(file_path): File(file_path)
             for file_path in self.project_root.glob("**/*.py")
         }
 
@@ -57,6 +57,17 @@ class Project:
             )
         else:
             return f"{padding}└── {dir_path.name}"
+
+    def get_file_path_by_path(self, file_path: str) -> str:
+        """Get the file path relative to the project root."""
+        return str(file_path.relative_to(self.project_root))
+
+    def get_file_path(self, file: File) -> str:
+        """Get the file path relative to the project root."""
+        return self.get_file_path_by_path(file.file_path)
+
+    def get_file(self, file: File) -> File:
+        return self.files[self.get_file_path(file)]
 
     def __str__(self) -> str:
         return self._tree(self.project_root, print_files=True)

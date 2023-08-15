@@ -24,10 +24,10 @@ class MainApplication:
     async def run(self):
         logger.info("Running")
         start = time.time()
-        docstrings = await self.llm_manager.generate_docstrings(
+        file_docstrings = await self.llm_manager.generate_docstrings(
             self.project_manager.get_files()
         )
-        self.project_manager.update_docstrings(docstrings)
+        self.project_manager.update_docstrings(file_docstrings)
 
         logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
         self.project_manager.save()
