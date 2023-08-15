@@ -16,11 +16,11 @@ class File:
     definitions: Dict[str, PyDefinition] = {}
 
     # Regex for finding functions or classes, and docstrings
-    re_definitions = r"""(?P<definition>^.*\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
+    re_definitions = r"""(?P<definition>^.*\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?[\s\S]*?:$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
 
     # Regex for finding specific function and classes based on type and name
     re_specific_definition = (
-        r"(?P<definition>^.*\b(?P<type>{type})\b (?P<name>{name}) *\(?.*?\)?.$)\n*"  # noqa: E501
+        r"(?P<definition>^.*\b(?P<type>{type})\b (?P<name>{name}) *\(?.*?\)?[\s\S]*?:$)\n*"  # noqa: E501
         + r"( *\"\"\"(?P<docstring>[\s\S]*?)\"\"\"\n*)?"
     )
 

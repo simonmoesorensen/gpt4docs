@@ -124,6 +124,22 @@ def test_replace_function_with_args_and_types_docstring(tmp_path):
     assert new_content == expected_content
 
 
+def test_add_function_docstring_with_args_multiple_lines(tmp_path):
+    p = tmp_path / "test.py"
+    p.write_text(
+        "def test_func(\n    args1: str,\n    args2: float\n    ):\n    pass\n"
+    )
+    file = File(str(p))
+
+    new_doc = PyDefinition(
+        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+    )
+    new_content = file._write_docstring(p.read_text(), new_doc)
+
+    expected_content = 'def test_func(\n    args1: str,\n    args2: float\n    ):\n    """\n    New docstring\n    """\n    pass\n'
+    assert new_content == expected_content
+
+
 def test_add_function_docstring_3_new_lines(tmp_path):
     p = tmp_path / "test.py"
     p.write_text("def test_func():\n\n\n    pass\n")
