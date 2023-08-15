@@ -29,8 +29,8 @@ help:
 run: ## Run the application
 	@python -m gpt4docs gpt4docs
 
-run-build: ## Run the application and build the vectorstore
-	@python -m gpt4docs gpt4docs --build
+run-build: ## Run the application and without building the vectorstore
+	@python -m gpt4docs gpt4docs --no-build
 
 run-compile: ## Run the application and build the vectorstore
 	@python -m gpt4docs gpt4docs --compile

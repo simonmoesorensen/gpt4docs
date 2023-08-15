@@ -18,11 +18,11 @@ class MainApplication:
         self._verify_env()
         self.args = args
 
-        if args.build:
+        if not args.no_build and not args.no_docstring:
             VectorStoreManager.build(args.vectorstore_path, args.project_path)
         else:
             logger.warning(
-                "Not building vectorstore. Any recent changes will not be used to generate documentation. If you want to build the vectorstore, run with `--build` argument."  # noqa: E501
+                "Not building vectorstore. Any recent changes will not be used to generate documentation. If you want to build the vectorstore, run without `--no-build` argument."  # noqa: E501
             )
 
         self.project_manager = ProjectManager(args.project_path)
@@ -76,20 +76,17 @@ class MainApplication:
         pdoc.pdoc(new_root, output_directory=self.args.output_path)
         logger.info(f"Finished compiling. Time spent: {time.time() - start:.2f}s")
 
-    def __call__(self, args: argparse.Namespace):
-        if args.build:
-            self.vector_store_manager.build(self.project_manager.project.project_root)
-        else:
-            asyncio.run(self.run())
+    def __call__(self):
+        asyncio.run(self.run())
 
     def _verify_args(self, args):
         if not args.project_path.exists():
             raise ValueError(f"Project path {args.project_path} does not exist")
 
-        if not args.build and not VectorStoreManager.is_built(args.vectorstore_path):
+        if args.no_build and not VectorStoreManager.is_built(args.vectorstore_path):
             raise ValueError(
-                "Vectorstore is not built. Run module with `--build` argument. "
-                "`python3 -m gpt4docs --build ..."
+                "Vectorstore is not built. Run module without `--no-build` argument. "
+                "`python3 -m gpt4docs --no-build ..."
             )
 
     def _verify_env(self):
@@ -114,9 +111,9 @@ class MainApplication:
             help="Path to vectorstore directory",
         )
         parser.add_argument(
-            "--build",
+            "--no-build",
             action="store_true",
-            help="Build vectorstore",
+            help="Don't build the vectorstore",
         )
         parser.add_argument(
             "--compile",
