@@ -30,7 +30,10 @@ class VectorStoreManager:
             embedding_function=OpenAIEmbeddings(),
         )
 
-    def get_retriever(self, k=6, search_kwargs={}):
+    def get_retriever(self, k=6, search_kwargs=None):
+        if search_kwargs is None:
+            search_kwargs = {}
+
         if "k" not in search_kwargs:
             search_kwargs.update({"k": k})
 
