@@ -15,14 +15,19 @@ class File:
     original_definitions: Dict[str, PyDefinition] = {}
     definitions: Dict[str, PyDefinition] = {}
 
+    # Regex for finding functions or classes, and docstrings
+    re_definitions = r"""(?P<definition>^.*\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
+
+    # Regex for finding specific function and classes based on type and name
+    re_specific_definition = (
+        r"(?P<definition>^.*\b(?P<type>{type})\b (?P<name>{name}) *\(?.*?\)?.$)\n*"  # noqa: E501
+        + r"( *\"\"\"(?P<docstring>[\s\S]*?)\"\"\"\n*)?"
+    )
+
     def __init__(self, file_path: str | Path) -> None:
         """Initializes the Scanner with the file path"""
         if isinstance(file_path, str):
             file_path = Path(file_path)
-
-        # Regex for finding functions or classes, and docstrings
-        self.re_definitions = r"""(?P<definition>^.*\b(?P<type>def|class)\b (?P<name>\w*) *\(?.*?\)?.$)\n*( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"""  # noqa: E501
-
         self.content = self._read_file(file_path)
         self.file_path = file_path
 
@@ -84,13 +89,12 @@ class File:
             return lines
 
         # Regex to find specific definition
-        re_definition = (
-            rf"(?P<definition>^.*\b(?P<type>{definition.type})\b (?P<name>{definition.name}) *\(?.*?\)?.$)\n*"  # noqa: E501
-            + r"( *\"{3}(?P<docstring>[\s\S]*?)\"{3}\n*)?"
+        re_specific_def = self.re_specific_definition.format(
+            type=definition.type, name=definition.name
         )
 
         # Match to find indentation level
-        match = re.search(re_definition, lines, flags=re.MULTILINE)
+        match = re.search(re_specific_def, lines, flags=re.MULTILINE)
 
         if match is None:
             logger.warning(
@@ -104,7 +108,7 @@ class File:
         if match.group("type") == "class":
             replacement += "\n"
 
-        new_code = re.sub(re_definition, replacement, lines, flags=re.MULTILINE)
+        new_code = re.sub(re_specific_def, replacement, lines, flags=re.MULTILINE)
 
         return new_code
 
