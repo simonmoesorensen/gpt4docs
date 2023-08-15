@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LLMManager:
     def __init__(self, vectorstore_manager):
-        self.llm = DocstringLLM(
+        self.docstring_llm = DocstringLLM(
             model_name="gpt-3.5-turbo-16k",
             retriever=vectorstore_manager.get_retriever(k=6),
         )
@@ -35,7 +35,7 @@ class LLMManager:
         return all_docstrings
 
     async def _generate_docstring(self, definition):
-        definition.docstring = await self.llm.arun(definition)
+        definition.docstring = await self.docstring_llm.arun(definition)
         return definition
 
     async def generate_readme(self):
