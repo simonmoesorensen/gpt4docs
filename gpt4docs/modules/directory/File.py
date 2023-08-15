@@ -52,6 +52,7 @@ class File:
         # Create definitions from all matches
         for match in re.finditer(self.re_definitions, self.content, flags=re.MULTILINE):
             defs[match.group("name")] = PyDefinition(
+                source=match.group("definition"),
                 type=match.group("type"),
                 name=match.group("name"),
                 docstring=match.group("docstring"),
