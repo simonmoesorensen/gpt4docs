@@ -36,8 +36,17 @@ class MainApplication:
         logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
         new_root = self.project_manager.save()
 
+        if self.args.readme:
+            start = time.time()
+            logger.info("Generating README.md")
+            readme = await self.llm_manager.generate_readme()
+            self.project_manager.add_readme(readme, new_root)
+            logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
+
         if self.args.compile:
             self.compile_docs(new_root)
+
+        logger.info("Finished")
 
     def compile_docs(self, new_root: str | Path):
         """Compile documentation using `pdoc`"""
@@ -97,6 +106,11 @@ class MainApplication:
             "--output_path",
             default=Path.cwd() / "pdoc_output",
             help="Path to output documentation using pdoc",
+        )
+        parser.add_argument(
+            "--readme",
+            action="store_true",
+            help="Generate README.md using LLM",
         )
         args = parser.parse_args()
 

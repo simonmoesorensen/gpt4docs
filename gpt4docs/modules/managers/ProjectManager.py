@@ -12,6 +12,9 @@ class ProjectManager:
             for def_ in definitions:
                 self.project.get_file(file).set_definition(def_)
 
+    def add_readme(self, content: str, project_dir: str | Path | None):
+        self.project.add_readme(content, project_dir)
+
     def save(self):
         return self.project.save()
 
