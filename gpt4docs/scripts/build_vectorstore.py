@@ -26,7 +26,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 root = Path(__file__).parent.parent.parent
-logger.info(f"Root: {root}")
 
 
 def delete_existing_vectorstore(directory: Path):
@@ -139,6 +138,7 @@ def build_vectorstore(
 
 
 if __name__ == "__main__":
+    logger.info(f"Root: {root}")
     persist_directory = root / "data" / ".chroma/"
     documents_folder = root / "data" / "documents"
     build_vectorstore(persist_directory, documents_folder)
