@@ -25,3 +25,6 @@ bump2version = "^1.0.1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+gpt4docs = "gpt4docs.__main__:run_app"
