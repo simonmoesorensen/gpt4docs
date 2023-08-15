@@ -9,7 +9,7 @@ from langchain.embeddings import OpenAIEmbeddings
 class VectorStoreManager:
     def __init__(self, vectorstore_path: str):
         self.dir = vectorstore_path
-        self.retriever = self.load(self.dir)
+        self.vectorstore = self.load(self.dir)
 
     @staticmethod
     def build(vectorstore_path: str, documents_folder: str):
@@ -25,9 +25,16 @@ class VectorStoreManager:
         if not self.is_built(vectorstore_path):
             raise ValueError(f"Cannot find vectorstore in {vectorstore_path}")
 
-        vectorstore = Chroma(
+        return Chroma(
             collection_name="documents",
             persist_directory=str(vectorstore_path),
             embedding_function=OpenAIEmbeddings(),
         )
-        return vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 6})
+
+    def get_retriever(self, k=6, search_kwargs={}):
+        if "k" not in search_kwargs:
+            search_kwargs.update({"k": k})
+
+        return self.vectorstore.as_retriever(
+            search_type="mmr", search_kwargs=search_kwargs
+        )

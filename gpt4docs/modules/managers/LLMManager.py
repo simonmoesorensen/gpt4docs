@@ -1,4 +1,4 @@
-from gpt4docs.model import DocstringLLM
+from gpt4docs.model import DocstringLLM, ReadmeLLM
 import asyncio
 import logging
 
@@ -9,8 +9,15 @@ logger = logging.getLogger(__name__)
 
 
 class LLMManager:
-    def __init__(self, retriever):
-        self.llm = DocstringLLM(model_name="gpt-3.5-turbo-16k", retriever=retriever)
+    def __init__(self, vectorstore_manager):
+        self.llm = DocstringLLM(
+            model_name="gpt-3.5-turbo-16k",
+            retriever=vectorstore_manager.get_retriever(k=6),
+        )
+        self.readme_llm = ReadmeLLM(
+            model_name="gpt-3.5-turbo-16k",
+            retriever=vectorstore_manager.get_retriever(k=10),
+        )
 
     async def generate_docstrings(self, files: List[File]):
         all_docstrings = {}
@@ -30,3 +37,6 @@ class LLMManager:
     async def _generate_docstring(self, definition):
         definition.docstring = await self.llm.arun(definition.name)
         return definition
+
+    async def generate_readme(self):
+        return await self.readme_llm.arun()
