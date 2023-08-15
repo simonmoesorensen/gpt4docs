@@ -57,13 +57,13 @@ class ReadmeLLM:
 
     def run(self) -> str:
         docs = self.get_relevant_docs()
-        response = self.chain.run(input_documents=docs)
+        response = self.chain({"input_documents": docs})
         logger.debug("\n\n".join(response["intermediate_steps"]))
         return response["output_text"]
 
     async def arun(self) -> str:
         docs = self.get_relevant_docs()
-        response = await self.chain.arun(input_documents=docs)
+        response = await self.chain.acall({"input_documents": docs})
         logger.debug("\n\n".join(response["intermediate_steps"]))
         return response["output_text"]
 
