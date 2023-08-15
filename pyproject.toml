@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gpt4docs"
-version = "0.1.2"
+version = "0.1.3"
 description = "Python package using AI to generate documentation for your codebase"
 authors = ["Simon Moe Sørensen <sso@2021.ai>"]
 

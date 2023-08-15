@@ -2,7 +2,7 @@
 
 __author__ = """Simon Moe Sørensen"""
 __email__ = "moe.simon@gmail.com"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 from gpt4docs.modules import ProjectManager, VectorStoreManager, LLMManager
 from gpt4docs.modules.datamodels.PyDefinition import PyDefinition, PyDefinitionTypeEnum
