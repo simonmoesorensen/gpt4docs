@@ -9,10 +9,12 @@ You must conform to these requirements:
 - The Usage section must describe the usage of the project using code blocks and lists and terminal applications if applicable.
 - The final README must be one COMBINED README of all the summaries of the codebase. You should emphasize any reference to an overall project rather than classes and functions, so you can write a README about the correct high-level project.
 - The README must only describe one project, meaning only one title and one description.
+- In the end of the README, you must include a section detailing the information used to generate the README. It should copy the given summaries of the codebase verbatim.
 
 Use the following summaries of the codebase to create a single, comprehensive, and understandable README for the project.
 You may add to the README as you see fit.
-In the end of the README, you must include a section detailing the information used to generate the README
+
+Summaries of the codebase:
 ______________________
 {text}
 ______________________
