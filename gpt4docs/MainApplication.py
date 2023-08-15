@@ -36,7 +36,7 @@ class MainApplication:
 
         new_root = self.project_manager.save()
 
-        if self.args.readme:
+        if not self.args.no_readme:
             VectorStoreManager.build(
                 self.args.vectorstore_path.parent / ".vectorstore_commented", new_root
             )
@@ -126,9 +126,9 @@ class MainApplication:
             help="Path to output documentation using pdoc",
         )
         parser.add_argument(
-            "--readme",
+            "--no-readme",
             action="store_true",
-            help="Generate README.md using LLM",
+            help="Do not generate README.md",
         )
         parser.add_argument(
             "--no-docstring",
