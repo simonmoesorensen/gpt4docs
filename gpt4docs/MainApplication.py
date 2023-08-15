@@ -63,7 +63,7 @@ class MainApplication:
     async def generate_readme(self, project_dir: str | Path):
         """Generate README.md using LLM"""
         start = time.time()
-        logger.info("Generating README.md")
+        logger.info("Generating README.md (may take a while)")
         readme = await self.llm_manager.generate_readme()
         self.project_manager.add_readme(readme, project_dir)
         logger.info(
