@@ -38,6 +38,7 @@ class ReadmeLLM:
 
         self.callbacks = callbacks
         self.model = ChatOpenAI(model_name=model_name, streaming=False, temperature=0)
+        self.reduce_llm = ChatOpenAI(model_name="gpt-4", streaming=False, temperature=0)
         self.retriever = retriever
 
         readme_prompt = PromptTemplate.from_template(
@@ -47,6 +48,7 @@ class ReadmeLLM:
 
         self.chain = load_summarize_chain(
             llm=self.model,
+            reduce_llm=self.reduce_llm,
             chain_type="map_reduce",
             map_prompt=map_prompt,
             combine_prompt=readme_prompt,
