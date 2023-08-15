@@ -10,7 +10,6 @@ GPT-4Docs is a Python project that utilizes the GPT-4 model for generating compr
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [Tests](#tests)
-- [Information Used to Generate README](#information-used-to-generate-readme)
 
 ## Installation
 
