@@ -12,7 +12,7 @@ class Project:
 
         self.project_root = project_root
         self.files = {
-            file_path.name: File(file_path)
+            str(file_path.relative_to(self.project_root)): File(file_path)
             for file_path in self.project_root.glob("**/*.py")
         }
 

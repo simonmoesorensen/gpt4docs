@@ -18,6 +18,7 @@ def test_project_save(tmp_path, project):
     new_doc = PyDefinition(
         type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
     )
+    assert project.files["nested_package/test.py"] is not None
     file = project.files["func1.py"]
     file.set_docstring("test_func", new_doc.docstring)
     project.save(suffix="_my_suffix")
