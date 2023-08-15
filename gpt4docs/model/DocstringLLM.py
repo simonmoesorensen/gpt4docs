@@ -18,7 +18,7 @@ TOKENS_LIMIT = {
 prompt_dir = Path(__file__).parent / "prompts"
 
 
-class LLM:
+class DocstringLLM:
     def __init__(
         self,
         retriever=None,

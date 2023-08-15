@@ -1,1 +1,1 @@
-from gpt4docs.model.LLM import LLM
+from gpt4docs.model.DocstringLLM import DocstringLLM

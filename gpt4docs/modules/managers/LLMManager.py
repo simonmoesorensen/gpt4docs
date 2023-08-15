@@ -1,4 +1,4 @@
-from gpt4docs.model import LLM
+from gpt4docs.model import DocstringLLM
 import asyncio
 import logging
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LLMManager:
     def __init__(self, retriever):
-        self.llm = LLM(model_name="gpt-3.5-turbo-16k", retriever=retriever)
+        self.llm = DocstringLLM(model_name="gpt-3.5-turbo-16k", retriever=retriever)
 
     async def generate_docstrings(self, files: List[File]):
         all_docstrings = {}
