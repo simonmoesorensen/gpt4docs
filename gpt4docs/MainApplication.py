@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import pdoc
 import time
 import os
@@ -135,6 +136,11 @@ class MainApplication:
             action="store_true",
             help="Do not generate docstrings",
         )
+
+        if len(sys.argv) == 1:
+            parser.print_help(sys.stderr)
+            sys.exit(1)
+
         args = parser.parse_args()
 
         logger.info(f"Arguments: {args}")
