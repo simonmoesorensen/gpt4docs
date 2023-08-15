@@ -16,7 +16,7 @@ class LLMManager:
         )
         self.readme_llm = ReadmeLLM(
             model_name="gpt-3.5-turbo-16k",
-            retriever=vectorstore_manager.get_retriever(k=10),
+            retriever=vectorstore_manager.get_retriever(k=20),
         )
 
     async def generate_docstrings(self, files: List[File]):
