@@ -31,16 +31,18 @@ class MainApplication:
         self.llm_manager = LLMManager(self.vector_store_manager)
 
     async def run(self):
-        logger.info("Running")
         if not self.args.no_docstring:
             await self.generate_docstrings()
 
-        new_root = self.project_manager.save()
+            new_root = self.project_manager.save()
+        else:
+            new_root = self.project_manager.project.project_root
 
         if not self.args.no_readme:
             VectorStoreManager.build(
                 self.args.vectorstore_path.parent / ".vectorstore_commented", new_root
             )
+            logger.info(f"Saving README.md to {new_root}")
             await self.generate_readme(new_root)
 
         if self.args.compile:
