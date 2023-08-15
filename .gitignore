@@ -1,3 +1,4 @@
+pdoc_output
 .vectorstore
 *_commented/
 .chroma
