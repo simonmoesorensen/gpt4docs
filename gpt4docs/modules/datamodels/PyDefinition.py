@@ -9,6 +9,7 @@ class PyDefinitionTypeEnum(str, Enum):
 
 
 class PyDefinition(BaseModel):
+    source: str  # Definition as it was in the source code
     type: PyDefinitionTypeEnum
     name: str
     docstring: Optional[str] = None
