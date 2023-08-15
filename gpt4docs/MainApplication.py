@@ -27,30 +27,41 @@ class MainApplication:
 
     async def run(self):
         logger.info("Running")
-        start = time.time()
-        file_docstrings = await self.llm_manager.generate_docstrings(
-            self.project_manager.get_files()
-        )
-        self.project_manager.update_docstrings(file_docstrings)
-
-        logger.info(
-            f"Finished generating docstrings. Time spent: {time.time() - start:.2f}s"
-        )
+        await self.generate_docstrings()
         new_root = self.project_manager.save()
 
         if self.args.readme:
-            start = time.time()
-            logger.info("Generating README.md")
-            readme = await self.llm_manager.generate_readme()
-            self.project_manager.add_readme(readme, new_root)
-            logger.info(
-                f"Finished generating README. Time spent: {time.time() - start:.2f}s"
+            VectorStoreManager.build(
+                self.args.vectorstore_path.parent / ".vectorstore_commented", new_root
             )
+            await self.generate_readme(new_root)
 
         if self.args.compile:
             self.compile_docs(new_root)
 
         logger.info("Finished")
+
+    async def generate_docstrings(self):
+        """Generate docstrings using LLM"""
+        start = time.time()
+        logger.info("Generating docstrings")
+        file_docstrings = await self.llm_manager.generate_docstrings(
+            self.project_manager.get_files()
+        )
+        self.project_manager.update_docstrings(file_docstrings)
+        logger.info(
+            f"Finished generating docstrings. Time spent: {time.time() - start:.2f}s"
+        )
+
+    async def generate_readme(self, project_dir: str | Path):
+        """Generate README.md using LLM"""
+        start = time.time()
+        logger.info("Generating README.md")
+        readme = await self.llm_manager.generate_readme()
+        self.project_manager.add_readme(readme, project_dir)
+        logger.info(
+            f"Finished generating README. Time spent: {time.time() - start:.2f}s"
+        )
 
     def compile_docs(self, new_root: str | Path):
         """Compile documentation using `pdoc`"""
