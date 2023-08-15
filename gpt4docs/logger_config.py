@@ -34,3 +34,4 @@ logging.getLogger("chromadb.segment.impl.vector.local_persistent_hnsw").setLevel
     logging.CRITICAL
 )
 logging.getLogger("blib2to3.pgen2.driver").setLevel(logging.CRITICAL)
+logging.getLogger("openai").setLevel(logging.WARNING)
