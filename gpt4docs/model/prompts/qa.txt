@@ -11,7 +11,7 @@ def _scan_for_documentation(self) -> None: """Scans the file for functions and c
 
 def save(self, overwrite: bool = False) -> None: """Writes the new documentation to the file""" lines = self.content for definition in self.documentation.values(): lines = self._write_docstring(lines, definition) if overwrite: file_path = self.file_path else: # Add .new to the file name file_path = self.file_path.parent / ( self.file_path.name.removesuffix(".py") + ".new.py") with open(file_path, "w") as f: f.writelines(lines)
 ______________________
-Write a docstring for the following definition: save
+Write a docstring for the following definition: `def save(self, overwrite: bool = False) -> None:`
 Generated Docstring: Writes the updated documentation to the Python file. If the overwrite parameter is set to True, the original file is overwritten with the updated content. Otherwise, a new file with a .new.py extension is created, containing the updated documentation.
 
 Args:

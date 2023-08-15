@@ -7,6 +7,8 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
 )
 
+from gpt4docs.modules.datamodels import PyDefinition
+
 TOKENS_LIMIT = {
     "gpt-3.5-turbo": 4096,
     "text-davinci-003": 4096,
@@ -47,7 +49,7 @@ class DocstringLLM:
                     open(prompt_dir / "qa.txt").read()
                 ),
                 HumanMessagePromptTemplate.from_template(
-                    "Write a docstring for the following definition: {question}\nGenerated Docstring:"  # noqa: E501
+                    "Write a docstring for the following definition: `{question}`\nGenerated Docstring:"  # noqa: E501
                 ),
             ]
         )
@@ -62,12 +64,12 @@ class DocstringLLM:
             retriever=self.retriever,
         )
 
-    def run(self, definition_name: str) -> str:
-        response = self.chain.run(definition_name)
+    def run(self, definition: PyDefinition) -> str:
+        response = self.chain.run(definition.source)
         return self._format_response(response)
 
-    async def arun(self, definition_name: str) -> str:
-        response = await self.chain.arun(query=definition_name)
+    async def arun(self, definition: PyDefinition) -> str:
+        response = await self.chain.arun(query=definition.source)
         return self._format_response(response)
 
     def _format_response(self, response: str) -> str:
