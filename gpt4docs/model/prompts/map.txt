@@ -1,0 +1,6 @@
+Your purpose is to write a README for a project.
+Given the following extracted parts of the codebase, decide what can be used for the README and summarize it in a large text paragraph.
+---------
+{text}
+---------
+Code summarized in text for writing a comprehensive README:
