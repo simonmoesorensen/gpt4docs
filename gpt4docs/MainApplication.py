@@ -27,7 +27,9 @@ class MainApplication:
 
     async def run(self):
         logger.info("Running")
-        await self.generate_docstrings()
+        if not self.args.no_docstring:
+            await self.generate_docstrings()
+
         new_root = self.project_manager.save()
 
         if self.args.readme:
@@ -126,6 +128,11 @@ class MainApplication:
             "--readme",
             action="store_true",
             help="Generate README.md using LLM",
+        )
+        parser.add_argument(
+            "--no-docstring",
+            action="store_true",
+            help="Do not generate docstrings",
         )
         args = parser.parse_args()
 
