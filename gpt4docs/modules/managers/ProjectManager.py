@@ -13,7 +13,7 @@ class ProjectManager:
                 self.project.get_file(file).set_definition(def_)
 
     def save(self):
-        self.project.save()
+        return self.project.save()
 
     def get_files(self):
         return self.project.files.values()
