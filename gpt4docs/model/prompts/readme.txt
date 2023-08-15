@@ -7,8 +7,9 @@ You must conform to these requirements:
 - The Description section must describe the high-level functionality of the project
 - The Installation section must describe the installation process using code blocks and lists.
 - The Usage section must describe the usage of the project using code blocks and lists and terminal applications if applicable.
+- The final README must be one COMBINED README of all the summaries of the codebase. You should emphasize any reference to an overall project rather than classes and functions, so you can write a README about the correct high-level project.
 
-Use the following summaries of the codebase to create a comprehensive and understandable README for the project.
+Use the following summaries of the codebase to create a single, comprehensive, and understandable README for the project.
 You may add to the README as you see fit.
 ______________________
 {text}
