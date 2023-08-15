@@ -37,6 +37,18 @@ class Project:
         logger.info(f"Saved {len(self.files)} files to {new_root}")
         return new_root
 
+    def add_readme(self, content: str, project_dir: str | Path | None):
+        """Add a README.md file"""
+        if project_dir is None:
+            project_dir = self.project_root
+        elif isinstance(project_dir, str):
+            project_dir = Path(project_dir)
+
+        readme = project_dir / "README.md"
+        readme.touch()
+        readme.write_text(content)
+        logger.info(f"Added README.md to {self.project_root}")
+
     def _tree(self, dir_path: Path, padding: str = "", print_files: bool = True):
         """Represent the directory tree as a string."""
         # Tree based on https://stackoverflow.com/a/9728478/4416928

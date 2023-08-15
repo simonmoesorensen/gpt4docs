@@ -44,6 +44,22 @@ def test_project_save(tmp_path, project):
         assert path.exists()
 
 
+def test_add_readme(project):
+    # Define some test content for the README file
+    content = "This is a test README file."
+
+    # Call the add_readme method with the test content
+    project.add_readme(content)
+
+    # Verify that the README file was created with the correct content
+    readme = project.project_root / "README.md"
+    assert readme.exists()
+    assert readme.read_text() == content
+
+    # Clean up
+    readme.unlink()
+
+
 def test_project_tree(project):
     expected_str = """├── test_package/
 │   ├── nested_package/
