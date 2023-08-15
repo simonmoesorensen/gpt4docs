@@ -137,4 +137,10 @@ class File:
         return self.original_definitions
 
     def __str__(self) -> str:
-        return str(self.definitions)
+        pretty_definitions = "\n".join(
+            [
+                " " * 4 + f"{name}: {definition}"
+                for name, definition in self.definitions.items()
+            ]
+        )
+        return f"""File: {self.file_path}\nDefinitions:\n{pretty_definitions}"""
