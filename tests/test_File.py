@@ -48,7 +48,10 @@ def test_replace_function_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func():",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -66,7 +69,10 @@ def test_replace_function_with_args_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func(arg1, arg2):",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -82,7 +88,10 @@ def test_replace_class_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+        source="class TestClass:",
+        type=PyDefinitionTypeEnum.class_,
+        name="TestClass",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -100,7 +109,10 @@ def test_replace_class_with_args_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+        source="class TestClass(arg1, arg2):",
+        type=PyDefinitionTypeEnum.class_,
+        name="TestClass",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -116,7 +128,10 @@ def test_replace_function_with_args_and_types_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func(arg1: str, arg2: int) -> float:",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -132,7 +147,10 @@ def test_add_function_docstring_with_args_multiple_lines(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func(\n    args1: str,\n    args2: float\n    ):",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -146,7 +164,10 @@ def test_add_function_docstring_3_new_lines(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func():",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -162,7 +183,10 @@ def test_add_function_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring="New docstring"
+        source="def test_func():",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -178,7 +202,10 @@ def test_add_class_docstring(tmp_path):
     file = File(str(p))
 
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.class_, name="TestClass", docstring="New docstring"
+        source="class TestClass",
+        type=PyDefinitionTypeEnum.class_,
+        name="TestClass",
+        docstring="New docstring",
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -244,7 +271,10 @@ def test_indentation_level_preserved_double_indent(tmp_path):
 
     new_docstring = "New line 1\nNew line 2"
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring=new_docstring
+        source="    def test_func(arg1, arg2):",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring=new_docstring,
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
@@ -265,7 +295,10 @@ def test_indentation_level_preserved(tmp_path):
 
     new_docstring = "New line 1\nNew line 2"
     new_doc = PyDefinition(
-        type=PyDefinitionTypeEnum.function, name="test_func", docstring=new_docstring
+        source="def test_func(arg1, arg2):",
+        type=PyDefinitionTypeEnum.function,
+        name="test_func",
+        docstring=new_docstring,
     )
     new_content = file._write_docstring(p.read_text(), new_doc)
 
