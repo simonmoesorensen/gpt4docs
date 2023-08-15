@@ -32,6 +32,9 @@ run: ## Run the application
 run-build: ## Run the application and build the vectorstore
 	@python -m gpt4docs gpt4docs --build
 
+run-compile: ## Run the application and build the vectorstore
+	@python -m gpt4docs gpt4docs --compile
+
 init: ## Initialize environment variables
 	@echo "Initializing environment variables...";
 	@read -p "Please enter the Open AI API key: " key; \
