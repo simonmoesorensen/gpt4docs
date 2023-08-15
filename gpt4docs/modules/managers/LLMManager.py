@@ -35,7 +35,7 @@ class LLMManager:
         return all_docstrings
 
     async def _generate_docstring(self, definition):
-        definition.docstring = await self.llm.arun(definition.name)
+        definition.docstring = await self.llm.arun(definition)
         return definition
 
     async def generate_readme(self):
