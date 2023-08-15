@@ -12,6 +12,7 @@ You must conform to these requirements:
 
 Use the following summaries of the codebase to create a single, comprehensive, and understandable README for the project.
 You may add to the README as you see fit.
+In the end of the README, you must include a section detailing the information used to generate the README
 ______________________
 {text}
 ______________________
