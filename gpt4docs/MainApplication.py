@@ -33,7 +33,9 @@ class MainApplication:
         )
         self.project_manager.update_docstrings(file_docstrings)
 
-        logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
+        logger.info(
+            f"Finished generating docstrings. Time spent: {time.time() - start:.2f}s"
+        )
         new_root = self.project_manager.save()
 
         if self.args.readme:
@@ -41,7 +43,9 @@ class MainApplication:
             logger.info("Generating README.md")
             readme = await self.llm_manager.generate_readme()
             self.project_manager.add_readme(readme, new_root)
-            logger.info(f"Finished. Time spent: {time.time() - start:.2f}s")
+            logger.info(
+                f"Finished generating README. Time spent: {time.time() - start:.2f}s"
+            )
 
         if self.args.compile:
             self.compile_docs(new_root)
