@@ -9,7 +9,7 @@ from langchain.embeddings import OpenAIEmbeddings
 class VectorStoreManager:
     def __init__(self, vectorstore_path: str):
         self.dir = vectorstore_path
-        self.vectorstore = self.load(self.dir)
+        self.retriever = self.load(self.dir)
 
     @staticmethod
     def build(vectorstore_path: str, documents_folder: str):

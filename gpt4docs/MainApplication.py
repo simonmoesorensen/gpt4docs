@@ -23,7 +23,7 @@ class MainApplication:
 
         self.project_manager = ProjectManager(args.project_path)
         self.vector_store_manager = VectorStoreManager(args.vectorstore_path)
-        self.llm_manager = LLMManager(self.vector_store_manager.vectorstore)
+        self.llm_manager = LLMManager(self.vector_store_manager.retriever)
 
     async def run(self):
         logger.info("Running")
