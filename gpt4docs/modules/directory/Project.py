@@ -37,7 +37,7 @@ class Project:
         logger.info(f"Saved {len(self.files)} files to {new_root}")
         return new_root
 
-    def add_readme(self, content: str, project_dir: str | Path | None):
+    def add_readme(self, content: str, project_dir: str | Path | None = None):
         """Add a README.md file"""
         if project_dir is None:
             project_dir = self.project_root
